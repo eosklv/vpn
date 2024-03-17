@@ -71,11 +71,6 @@ resource "aws_vpc_security_group_egress_rule" "allow_all_traffic_ipv4" {
   ip_protocol       = "-1"
 }
 
-output "instance_public_ip" {
-  description = "Public IP of the VPN server"
-  value       = aws_instance.vpn_server.public_ip
-}
-
 data "aws_iam_policy_document" "assume_role_ec2" {
   statement {
     effect = "Allow"
