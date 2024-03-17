@@ -23,6 +23,10 @@ data "aws_vpc" "default" {
   id = var.default_vpc_id
 }
 
+data "aws_s3_bucket" "default" {
+  bucket = var.default_bucket
+}
+
 resource "aws_instance" "vpn_server" {
   ami           = var.ami_id
   instance_type = "t4g.nano"
@@ -34,6 +38,8 @@ resource "aws_instance" "vpn_server" {
   }
 
   security_groups = ["allow_ssh"]
+
+  iam_instance_profile = aws_iam_instance_profile.esklv-vpnS3FullAccess.name
 
   tags = {
     Name = "vpn_server"
@@ -68,4 +74,50 @@ resource "aws_vpc_security_group_egress_rule" "allow_all_traffic_ipv4" {
 output "instance_public_ip" {
   description = "Public IP of the VPN server"
   value       = aws_instance.vpn_server.public_ip
+}
+
+data "aws_iam_policy_document" "assume_role_ec2" {
+  statement {
+    effect = "Allow"
+
+    principals {
+      type        = "Service"
+      identifiers = ["ec2.amazonaws.com"]
+    }
+
+    actions = ["sts:AssumeRole"]
+  }
+}
+
+resource "aws_iam_role" "esklv-vpnS3FullAccess" {
+  name               = "esklv-vpnS3FullAccess"
+  assume_role_policy = data.aws_iam_policy_document.assume_role_ec2.json
+}
+
+data "aws_iam_policy_document" "esklv-vpnS3FullAccess" {
+  statement {
+    actions   = ["s3:ListBucket"]
+    resources = [data.aws_s3_bucket.default.arn]
+    effect    = "Allow"
+  }
+  statement {
+    actions   = ["s3:*"]
+    resources = ["arn:aws:s3:::${data.aws_s3_bucket.default.bucket}/*"]
+    effect    = "Allow"
+  }
+}
+
+resource "aws_iam_policy" "esklv-vpnS3FullAccess" {
+  name   = "esklv-vpnS3FullAccess"
+  policy = data.aws_iam_policy_document.esklv-vpnS3FullAccess.json
+}
+
+resource "aws_iam_role_policy_attachment" "esklv-vpnS3FullAccess" {
+  role       = aws_iam_role.esklv-vpnS3FullAccess.name
+  policy_arn = aws_iam_policy.esklv-vpnS3FullAccess.arn
+}
+
+resource "aws_iam_instance_profile" "esklv-vpnS3FullAccess" {
+  name = "esklv-vpnS3FullAccess"
+  role = aws_iam_role.esklv-vpnS3FullAccess.name
 }
