@@ -17,3 +17,8 @@ variable "my_ips" {
   type    = list(string)
   default = ["45.9.230.81/32"]
 }
+
+variable "script_url" {
+  description = "Bootscript from git repo"
+  default     = "https://raw.githubusercontent.com/esklv/vpn/main/vpn/script.sh"
+}
