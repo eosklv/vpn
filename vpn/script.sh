@@ -1,13 +1,12 @@
 #!/bin/bash
 # A bootscript for VPN server
 sudo apt update
-sudo apt install openvpn easy-rsa unzip
+sudo apt install openvpn easy-rsa unzip -y
 
-cd ~
-curl "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip" -o "awscliv2.zip"
-unzip awscliv2.zip
+curl "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip" -o ~/"awscliv2.zip"
+unzip ~/awscliv2.zip
 sudo ./aws/install
-rm -rf ./aws*
+rm -rf ~/aws*
 
 export EASYRSA_BATCH=1
 
