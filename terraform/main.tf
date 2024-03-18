@@ -36,7 +36,7 @@ resource "aws_instance" "vpn_server" {
   user_data = <<EOF
 #!/bin/bash
 curl "${var.script_url}" -o /home/ubuntu/script.sh
-chmod 777 /home/ubuntu/script.sh
+chmod 700 /home/ubuntu/script.sh
 /home/ubuntu/script.sh
 EOF
 
