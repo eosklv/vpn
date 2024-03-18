@@ -46,9 +46,9 @@ resource "aws_instance" "vpn_server" {
   }
 }
 
-resource "aws_security_group" "allow_ssh" {
-  name        = "allow_ssh"
-  description = "Allow SSH inbound traffic and all outbound traffic"
+resource "aws_security_group" "allow_connecting" {
+  name        = "allow_connecting"
+  description = "Allow SSH and HTTPS inbound traffic and all outbound traffic"
   vpc_id      = data.aws_vpc.default.id
 
   tags = {
@@ -63,6 +63,15 @@ resource "aws_vpc_security_group_ingress_rule" "allow_ssh_ipv4" {
   from_port         = 22
   ip_protocol       = "tcp"
   to_port           = 22
+}
+
+resource "aws_vpc_security_group_ingress_rule" "allow_https_ipv4" {
+  security_group_id = aws_security_group.allow_ssh.id
+  for_each          = toset(var.my_ips)
+  cidr_ipv4         = each.key
+  from_port         = 443
+  ip_protocol       = "tcp"
+  to_port           = 443
 }
 
 resource "aws_vpc_security_group_egress_rule" "allow_all_traffic_ipv4" {
