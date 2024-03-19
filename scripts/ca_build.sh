@@ -2,6 +2,7 @@
 # Init PKI and build CA
 export EASYRSA_BATCH=1
 
+cd ~
 mkdir ~/easy-rsa
 ln -s /usr/share/easy-rsa/* ~/easy-rsa/
 chmod 700 ~/easy-rsa
