@@ -23,4 +23,4 @@ chmod -R 700 ~/client-configs
 cp ~/pki/private/client.key ~/client-configs/keys/
 
 cp ~/pki/reqs/server.req ~/pki/reqs/client.req /tmp/
-chown ca:ca /tmp/server.req /tmp/client.req
+sudo chown ca:ca /tmp/server.req /tmp/client.req
