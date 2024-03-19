@@ -33,13 +33,6 @@ resource "aws_instance" "vpn_server" {
 
   key_name = "eugeny"
 
-  user_data = <<EOF
-#!/bin/bash
-curl "${var.script_url}" -o /home/ubuntu/script.sh
-chmod 700 /home/ubuntu/script.sh
-/home/ubuntu/script.sh
-EOF
-
   root_block_device {
     volume_type = "gp3"
   }
