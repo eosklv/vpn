@@ -18,12 +18,12 @@ variable "my_ips" {
   default = ["45.9.230.8/32"]
 }
 
-variable "script_url" {
-  description = "Bootscript from git repo"
-  default     = "https://raw.githubusercontent.com/esklv/vpn/main/vpn/script.sh"
+variable "scripts_repo_url" {
+  description = "Git repo link for scripts"
+  default     = "https://raw.githubusercontent.com/esklv/vpn/main/scripts/"
 }
 
-variable "ca_script_url" {
-  description = "CA script from git repo"
-  default     = "https://raw.githubusercontent.com/esklv/vpn/main/vpn/ca-script.sh"
+variable "scripts_list" {
+  description = "List of scripts"
+  default     = ["server_init.sh", "ca_build.sh", "req_gen.sh", "ca_sign.sh", "ovpn_cfg.sh"]
 }

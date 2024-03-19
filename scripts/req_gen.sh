@@ -1,5 +1,5 @@
 #!/bin/bash
-# Generate requests
+# Generate CSRs
 export EASYRSA_BATCH=1
 
 mkdir ~/easy-rsa
@@ -21,3 +21,5 @@ chmod -R 700 ~/client-configs
 ~/easy-rsa/easyrsa gen-req client nopass
 cp ~/pki/private/client.key ~/client-configs/keys/
 
+cp ~/pki/reqs/server.req ~/pki/reqs/client.req /tmp/
+chown ca:ca /tmp/server.req /tmp/client.req

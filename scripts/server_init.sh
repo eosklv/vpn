@@ -1,6 +1,5 @@
 #!/bin/bash
-# A bootscript for server
-echo ""
+# Installing packages
 sudo apt update
 sudo apt install openvpn easy-rsa unzip -y
 

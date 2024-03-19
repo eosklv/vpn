@@ -4,7 +4,7 @@ export EASYRSA_BATCH=1
 ~/easy-rsa/easyrsa import-req /tmp/server.req server
 
 ~/easy-rsa/easyrsa sign-req server server
-sudo cp ~/pki/issued/server.crt /etc/openvpn/server/
+sudo cp ~/pki/issued/server.crt ~/pki/ca.crt /etc/openvpn/server/
 
 ~/easy-rsa/easyrsa import-req /tmp/client.req client
 

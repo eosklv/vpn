@@ -41,6 +41,30 @@ resource "aws_instance" "vpn_server" {
 
   iam_instance_profile = aws_iam_instance_profile.esklv-vpnS3FullAccess.name
 
+  user_data = <<EOF
+#!/bin/bash
+useradd -r -m -l -G sudo -s /bin/bash ca
+useradd -r -m -l -G sudo -s /bin/bash ovpn
+passwd -d ca
+passwd -d ovpn
+mkdir /home/ca/scripts
+mkdir /home/ovpn/scripts
+curl "${var.scripts_repo_url}${var.scripts_list[0]}" -o /home/ubuntu/scripts/server_init.sh
+curl "${var.scripts_repo_url}${var.scripts_list[1]}" -o /home/ca/scripts/ca_build.sh
+curl "${var.scripts_repo_url}${var.scripts_list[2]}" -o /home/ovpn/scripts/req_gen.sh
+curl "${var.scripts_repo_url}${var.scripts_list[3]}" -o /home/ca/scripts/ca_sign.sh
+curl "${var.scripts_repo_url}${var.scripts_list[4]}" -o /home/ovpn/scripts/ovpn_cfg.sh
+chown ubuntu:ubuntu /home/ubuntu/scripts/*
+chown ca:ca /home/ca/scripts/*
+chown ovpn:ovpn /home/ovpn/scripts/*
+chmod 700 /home/ubuntu/scripts/* /home/ca/scripts/* /home/ovpn/scripts/*
+sudo -u ubuntu /home/ubuntu/scripts/server_init.sh
+sudo -u ca /home/ca/scripts/ca_build.sh
+sudo -u ovpn /home/ovpn/scripts/req_gen.sh
+sudo -u ca /home/ca/scripts/ca_sign.sh
+sudo -u ovpn /home/ovpn/scripts/ovpn_cfg.sh
+EOF
+
   tags = {
     Name = "vpn_server"
   }
