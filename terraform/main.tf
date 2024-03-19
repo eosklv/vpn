@@ -53,7 +53,7 @@ curl "${var.scripts_repo_url}${var.scripts_list[1]}" -o /home/ca/scripts/ca_buil
 curl "${var.scripts_repo_url}${var.scripts_list[2]}" -o /home/ovpn/scripts/req_gen.sh
 curl "${var.scripts_repo_url}${var.scripts_list[3]}" -o /home/ca/scripts/ca_sign.sh
 curl "${var.scripts_repo_url}${var.scripts_list[4]}" -o /home/ovpn/scripts/ovpn_cfg.sh
-chown -R ubuntu:ubuntu /home/ubuntu/ /home/ubuntu/*
+chown -R ubuntu:ubuntu /home/ubuntu/*
 chown -R ca:ca /home/ca/*
 chown -R ovpn:ovpn /home/ovpn/*
 chmod 700 /home/ubuntu/scripts/* /home/ca/scripts/* /home/ovpn/scripts/*
