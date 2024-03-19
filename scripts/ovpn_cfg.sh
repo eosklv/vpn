@@ -3,7 +3,7 @@
 openvpn --genkey secret ~/easy-rsa/ta.key
 sudo cp ~/easy-rsa/ta.key /etc/openvpn/server/
 
-cp ~/ta.key /tmp/client.crt ~/client-configs/keys/
+cp ~/easy-rsa/ta.key /tmp/client.crt ~/client-configs/keys/
 sudo cp /etc/openvpn/server/ca.crt ~/client-configs/keys/
 sudo chown ovpn.ovpn ~/client-configs/keys/*
 
