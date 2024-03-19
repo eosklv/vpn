@@ -12,13 +12,12 @@ set_var EASYRSA_ALGO "ec"
 set_var EASYRSA_DIGEST "sha512"
 EOF
 
-~/easy-rsa/easyrsa build-ca nopass
-sudo cp ~/pki/ca.crt /etc/openvpn/server/
-
 ~/easy-rsa/easyrsa gen-req server nopass
 sudo cp ~/pki/private/server.key /etc/openvpn/server/
 
+mkdir -p ~/client-configs/keys
+chmod -R 700 ~/client-configs
+
 ~/easy-rsa/easyrsa gen-req client nopass
 cp ~/pki/private/client.key ~/client-configs/keys/
-
 

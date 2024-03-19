@@ -1,14 +1,13 @@
 #!/bin/bash
 # Configuring and launching OpenVPN Server, uploading VPN profile
+cp /tmp/client.crt ~/client-configs/keys/
+
 openvpn --genkey secret ta.key
 sudo cp ~/ta.key /etc/openvpn/server/
 
-mkdir -p ~/client-configs/keys
-chmod -R 700 ~/client-configs
-
 cp ~/ta.key ~/client-configs/keys/
 sudo cp /etc/openvpn/server/ca.crt ~/client-configs/keys/
-sudo chown ubuntu.ubuntu ~/client-configs/keys/*
+sudo chown ovpn.ovpn ~/client-configs/keys/*
 
 sudo aws s3 cp s3://esklv-vpn/configs/server.conf /etc/openvpn/server/
 
