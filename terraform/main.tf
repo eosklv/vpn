@@ -43,25 +43,17 @@ resource "aws_instance" "vpn_server" {
 
   user_data = <<EOF
 #!/bin/bash
-useradd -r -m -l -G sudo -s /bin/bash ca
-useradd -r -m -l -G sudo -s /bin/bash ovpn
-passwd -d ca
-passwd -d ovpn
-mkdir /home/ubuntu/scripts /home/ca/scripts /home/ovpn/scripts
-curl "${var.scripts_repo_url}${var.scripts_list[0]}" -o /home/ubuntu/scripts/server_init.sh
-curl "${var.scripts_repo_url}${var.scripts_list[1]}" -o /home/ca/scripts/ca_build.sh
-curl "${var.scripts_repo_url}${var.scripts_list[2]}" -o /home/ovpn/scripts/req_gen.sh
-curl "${var.scripts_repo_url}${var.scripts_list[3]}" -o /home/ca/scripts/ca_sign.sh
-curl "${var.scripts_repo_url}${var.scripts_list[4]}" -o /home/ovpn/scripts/ovpn_cfg.sh
+# Bootscript
+apt update
+apt install unzip -y
+curl "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip" -o "/home/ubuntu/awscliv2.zip"
+unzip /home/ubuntu/awscliv2.zip -d /home/ubuntu/
+/home/ubuntu/aws/install
+mkdir /home/ubuntu/scripts
+aws s3 cp s3://${var.default_bucket}/scripts/bootscript.sh /home/ubuntu/scripts/
 chown -R ubuntu:ubuntu /home/ubuntu/*
-chown -R ca:ca /home/ca/*
-chown -R ovpn:ovpn /home/ovpn/*
-chmod 700 /home/ubuntu/scripts/* /home/ca/scripts/* /home/ovpn/scripts/*
-sudo -u ubuntu /home/ubuntu/scripts/server_init.sh
-sudo -u ca /home/ca/scripts/ca_build.sh
-sudo -u ovpn /home/ovpn/scripts/req_gen.sh
-sudo -u ca /home/ca/scripts/ca_sign.sh
-sudo -u ovpn /home/ovpn/scripts/ovpn_cfg.sh
+chmod 700 /home/ubuntu/scripts/*
+sudo -u ubuntu /home/ubuntu/scripts/bootscript.sh
 EOF
 
   tags = {

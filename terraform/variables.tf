@@ -17,13 +17,3 @@ variable "my_ips" {
   type    = list(string)
   default = ["45.9.230.8/32"]
 }
-
-variable "scripts_repo_url" {
-  description = "Git repo link for scripts"
-  default     = "https://raw.githubusercontent.com/esklv/vpn/main/scripts/"
-}
-
-variable "scripts_list" {
-  description = "List of scripts"
-  default     = ["server_init.sh", "ca_build.sh", "req_gen.sh", "ca_sign.sh", "ovpn_cfg.sh"]
-}
