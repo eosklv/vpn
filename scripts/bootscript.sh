@@ -30,14 +30,14 @@ EOF
 
 openvpn --genkey secret ~/easy-rsa/ta.key
 
-sudo cp ~/pki/issued/server.crt ~/pki/private/server.key \
-	~/pki/ca.crt ~/easy-rsa/ta.key /etc/openvpn/server/
+sudo cp ~/easy-rsa/pki/issued/server.crt ~/easy-rsa/pki/private/server.key \
+	~/easy-rsa/pki/ca.crt ~/easy-rsa/ta.key /etc/openvpn/server/
 
 mkdir -p ~/client-configs/keys
 chmod -R 700 ~/client-configs
 
-cp ~/easy-rsa/ta.key ~/pki/issued/client.crt ~/pki/private/client.key \
-	~/pki/ca.crt ~/client-configs/keys/
+cp ~/easy-rsa/ta.key ~/easy-rsa/pki/issued/client.crt ~/easy-rsa/pki/private/client.key \
+	~/easy-rsa/pki/ca.crt ~/client-configs/keys/
 
 sudo chown ubuntu.ubuntu ~/client-configs/keys/*
 
