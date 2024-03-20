@@ -16,6 +16,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v3
         with:
           role-to-assume: arn:aws:iam::905418258334:role/esklv-vpnS3FullAccessFromGitHub
+          role-session-name: samplerolesession          
           aws-region: ${{ env.AWS_REGION }}
       - name:  Sync scripts and configs with S3
         run: |
