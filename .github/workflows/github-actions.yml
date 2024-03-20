@@ -1,23 +1,23 @@
 name: Upload scripts and configs to S3
 on: [push]
+env:
+  BUCKET_NAME : "esklv-vpn"
+  AWS_REGION : "us-east-2"
+permissions:
+  id-token: write
+  contents: read
 jobs:
-  Explore-GitHub-Actions:
+  S3Upload:
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
-      - name: Upload scripts to S3
-        uses: shallwefootball/upload-s3-action@v1.3.3
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v3
         with:
-          aws_key_id: ${{ secrets.AWS_KEY_ID }}
-          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws_bucket: ${{ secrets.AWS_BUCKET }}
-          source_dir: 'scripts'
-      - name: Upload to S3
+          role-to-assume: arn:aws:iam::905418258334:role/esklv-vpnS3FullAccessFromGitHub
+          aws-region: ${{ env.AWS_REGION }}
+      - name:  Sync scripts and configs with S3
         run: |
-          aws s3 sync ./scripts s3://${{ secrets.AWS_BUCKET }}/scripts
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: 'us-east-2'
-      - run: echo "🍏 This job's status is ${{ job.status }}."
+          aws s3 sync ./scripts s3://${{ env.BUCKET_NAME }}/scripts/
+          aws s3 sync ./configs s3://${{ env.BUCKET_NAME }}/configs/
