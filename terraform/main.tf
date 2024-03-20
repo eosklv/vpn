@@ -43,7 +43,6 @@ resource "aws_instance" "vpn_server" {
 
   user_data = <<EOF
 #!/bin/bash
-# Bootscript
 apt update
 apt install unzip -y
 curl "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip" -o "/home/ubuntu/awscliv2.zip"
