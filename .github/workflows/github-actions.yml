@@ -7,7 +7,7 @@ permissions:
   id-token: write
   contents: read
 jobs:
-  Deploy:
+  Deploy-Application:
     runs-on: ubuntu-latest
     strategy:
       matrix:
