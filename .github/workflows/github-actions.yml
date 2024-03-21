@@ -7,8 +7,11 @@ permissions:
   id-token: write
   contents: read
 jobs:
-  S3-Upload:
+  UpdateResources:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [18.x]
     steps:
       - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
@@ -26,4 +29,14 @@ jobs:
         run: |
           aws s3 sync ./scripts s3://${{ env.BUCKET_NAME }}/scripts/
           aws s3 sync ./configs s3://${{ env.BUCKET_NAME }}/configs/
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: npm ci
+    - name: Enter dir and deploy
+      uses: serverless/github-action@v3.2
+      with:
+        args: -c "cd ./telegram && serverless deploy"
+        entrypoint: /bin/sh
       - run: echo "🍏 This job's status is ${{ job.status }}."
