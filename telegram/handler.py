@@ -28,7 +28,7 @@ def handler(event, context):
             response = "Here we go... Hold on a second..."
 
         elif "go" in message.lower():
-            response = "I'll dtry my best, but can't promise... Hold on a second..."
+            response = "I'll try my best, but can't promise... Hold on a second..."
 
         else:
             response = "Thank you... Thank you for being so dumb!"
