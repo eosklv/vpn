@@ -2,7 +2,7 @@ import telebot
 import subprocess
 import os
 
-token = "6997976277:AAGdpGgxgYNpwCxQYx0PBu_40HLPes61EGo"
+token = os.environ["bot"]
 bot = telebot.TeleBot(token)
 
 
