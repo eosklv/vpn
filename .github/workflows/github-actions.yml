@@ -1,8 +1,5 @@
 name: Deploy application to Lambda and sync files with S3
 on: [push]
-env:
-  BUCKET_NAME : "esklv-vpn"
-  AWS_REGION : "us-east-2"
 permissions:
   id-token: write
   contents: read
@@ -23,13 +20,11 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v3
         with:
           role-to-assume: arn:aws:iam::905418258334:role/esklv-vpnS3FullAccessFromGithub
-          role-session-name: somename
-          aws-region: ${{ env.AWS_REGION }}
+          aws-region: us-east-2
       - name: Sync scripts and configs with S3
         run: |
-          aws s3 sync ./scripts s3://${{ env.BUCKET_NAME }}/scripts/
-          aws s3 sync ./configs s3://${{ env.BUCKET_NAME }}/configs/
-          
+          aws s3 sync ./scripts s3://esklv-vpn/scripts/
+          aws s3 sync ./configs s3://esklv-vpn/configs/
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
@@ -44,6 +39,8 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: Enter dir and deploy
         uses: serverless/github-action@v3.2
+        env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
         with:
           args: -c "cd ./telegram && serverless deploy"
           entrypoint: /bin/sh
