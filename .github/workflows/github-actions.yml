@@ -10,16 +10,12 @@ jobs:
       matrix:
         node-version: [18.x]
     steps:
-      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
-      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
-      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
       - name: Check out repository code
         uses: actions/checkout@v4
-      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v3
         with:
-          role-to-assume: arn:aws:iam::905418258334:role/esklv-vpnS3FullAccessFromGithub
+          role-to-assume: arn:aws:iam::905418258334:role/GithubAccess
           aws-region: us-east-2
       - name: Sync scripts and configs with S3
         run: |
@@ -44,4 +40,3 @@ jobs:
         with:
           args: -c "cd ./telegram && serverless deploy"
           entrypoint: /bin/sh
-      - run: echo "🍏 This job's status is ${{ job.status }}."
