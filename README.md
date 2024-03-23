@@ -5,7 +5,7 @@ This project was created to demonstrate the capabilities of cloud engineering an
 
 Using simple commands in the telegram bot, the user can create his own free (within AWS Free Tier) OpenVPN server with a dedicated public IP address in the selected region. He can also configure this VPN server without connecting via SSH. When the work is done, the entire infrastructure can be automatically destroyed.
 
-<a href="url"><img src="images/screenshot.png?raw=true" align="center" height=50% width=50% ></a>
+<a href="url"><img src="images/screenshot.png?raw=true" align="center" height=55% width=55% ></a>
 ## Tech Stack
 
 **Cloud:** AWS
@@ -24,7 +24,7 @@ When receiving a new message, Telegram calls a webhook. It is attached to AWS AP
 
 Depending on the selected action the bot can either respond with a message or launch another Workflow in GitHub Actions. This workflow will launch Terraform to make changes to the current state of the AWS infrastructure, which includes VPN server itself, security groups, roles and IAM policies. There's user data integrated in EC2 instance - Bash script will install the necessary software, prepare the Certification Authority, as well as certificates and keys for the server and client. Then it configures system, access and firewall. After that, the complete VPN profile is generated and uploaded to AWS S3, and the download link is provided to a user by Telegram bot.
 
-<a href="url"><img src="images/diagram.png?raw=true" align="center" height=90% width=90% ></a>
+<a href="url"><img src="images/diagram.png?raw=true" align="center" height=99% width=99% ></a>
 ## Author
 
 - [Eugeny Sokolov](https://linkedin.com/in/esklv)
