@@ -45,7 +45,7 @@ def downloadDirectoryFroms3(bucketName, remoteDirectoryName):
 def send_message(chat_id, response, parse_mode=False):
     payload = {"text": response.encode("utf8"), "chat_id": chat_id}
     if parse_mode:
-        data["parse_mode"] = parse_mode
+        payload["parse_mode"] = parse_mode
     url = TELEGRAM_URL + "/sendMessage"
     requests.post(url, data=payload)
 
