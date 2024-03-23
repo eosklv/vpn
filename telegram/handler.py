@@ -29,11 +29,11 @@ def github_call():
     })
     headers = {
       'Accept': 'application/vnd.github+json',
-      'Authorization': f'Bearer {GITHUB_TOKEN}',
+      'Authorization': f'Bearer {GH_TOKEN}',
       'X-GitHub-Api-Version': '2022-11-28',
       'Content-Type': 'application/json'
     }
-    return requests.post(GITHUB_URL, headers=headers, data=payload)
+    return requests.post(GH_URL, headers=headers, data=payload)
 
 def downloadDirectoryFroms3(bucketName, remoteDirectoryName):
     s3_resource = boto3.resource('s3')
