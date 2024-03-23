@@ -47,6 +47,9 @@ def handler(event, context):
             send_message(chat_id, "I'll try my best, but can't promise... Hold on a moment...")
             send_message(chat_id, "I've done my dirty work.")
 
+        elif "bye" in message:
+            send_message(chat_id, "Talk to you soon.")
+
         else:
             send_message(chat_id, "Thank you... Thank you for being so dumb!")
 
