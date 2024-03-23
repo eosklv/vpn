@@ -66,9 +66,8 @@ def handler(event, context):
 
         elif "run" in message:
             send_message(chat_id, "Here we go... Hold on a moment...")
-            # i = 0
-            # while i < 120:
-            #     time.sleep(10)
+            m = github_call()
+            send_message(chat_id, m)
             s = s3_client.generate_presigned_url('get_object',
                                                  Params={'Bucket': 'esklv-vpn', 'Key': 'profiles/client.ovpn'},
                                                  ExpiresIn=300)
