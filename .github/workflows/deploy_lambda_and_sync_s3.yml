@@ -13,7 +13,7 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@v4
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v3
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::905418258334:role/GithubAccess
           aws-region: us-east-2
@@ -23,7 +23,7 @@ jobs:
           aws s3 sync ./configs s3://esklv-vpn/configs/
           aws s3 sync ./terraform s3://esklv-vpn/terraform/
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
       - name: Pack dependencies for Lambda
