@@ -8,8 +8,6 @@ sys.path.append(os.path.join(here, "./vendored"))
 
 import requests
 import python_terraform
-# tf = Terraform(working_dir='./terraform')
-# tf.plan()
 
 TELEGRAM_TOKEN = os.environ['TELEGRAM_TOKEN']
 TELEGRAM_URL = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}"
@@ -36,6 +34,14 @@ s3_client = boto3.client('s3')
 #     }
 #     return requests.post(GITHUB_URL, headers=headers, data=payload)
 
+def downloadDirectoryFroms3(bucketName, remoteDirectoryName):
+    s3_resource = boto3.resource('s3')
+    bucket = s3_resource.Bucket(bucketName) 
+    for obj in bucket.objects.filter(Prefix = remoteDirectoryName):
+        if not os.path.exists(os.path.dirname(obj.key)):
+            os.makedirs(os.path.dirname(obj.key))
+        bucket.download_file(obj.key, obj.key)
+
 def send_message(chat_id, response, parse_mode=False):
     payload = {"text": response.encode("utf8"), "chat_id": chat_id}
     if parse_mode:
@@ -59,6 +65,8 @@ def handler(event, context):
 
         elif "run" in message:
             send_message(chat_id, "Here we go... Hold on a moment...")
+            tf = Terraform(working_dir='./terraform')
+            return_code, stdout, stderr = tf.plan()
             s = s3_client.generate_presigned_url('get_object',
                                                  Params={'Bucket': 'esklv-vpn', 'Key': 'profiles/client.ovpn'},
                                                  ExpiresIn=300)
