@@ -29,7 +29,7 @@ jobs:
       - name: Pack dependencies for Lambda
         run: |
           python -m pip install --upgrade pip
-          pip install -r ./telegram/requirements.txt -t ./telegram/vendored
+          pip install -r ./telegram/requirements.txt -t ./telegram/.vendored
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
@@ -41,33 +41,3 @@ jobs:
         with:
           args: -c "cd ./telegram && serverless deploy"
           entrypoint: /bin/sh
-
-name: Deploy infrastructure using Terraform
-on: [repository_dispatch]
-permissions:
-  id-token: write
-  contents: read
-defaults:
-  run:
-    working-directory: "terraform"
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Check out repository code
-        uses: actions/checkout@v4
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v3
-        with:
-          role-to-assume: arn:aws:iam::905418258334:role/GithubAccess
-          aws-region: us-east-2
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-      - run: terraform init
-
-      - id: plan
-        run: terraform plan -no-color
-
-      - run: echo ${{ steps.plan.outputs.stdout }}
-      - run: echo ${{ steps.plan.outputs.stderr }}
-      - run: echo ${{ steps.plan.outputs.exitcode }}
