@@ -8,7 +8,6 @@ here = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.join(here, "./vendored"))
 
 import requests
-import python_terraform
 
 TELEGRAM_TOKEN = os.environ['TELEGRAM_TOKEN']
 TELEGRAM_URL = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}"
