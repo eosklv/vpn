@@ -21,6 +21,8 @@ Technically, the process is structured as follows:
 When receiving a new message, Telegram calls a webhook. It is attached to AWS API Gateway which launches a handler function in AWS Lambda. This fucntion is a Python script that is deployed using GitHub Actions and Serverless Framework.
 
 Depending on the selected action the bot can either respond with a message or launch another Workflow in GitHub Actions. This workflow will launch Terraform to make changes to the current state of the AWS infrastructure, which includes VPN server itself, security groups, roles and IAM policies. There's user data integrated in EC2 instance - Bash script will install the necessary software, prepare the Certification Authority, as well as certificates and keys for the server and client. Then it configures system, access and firewall. After that, the complete VPN profile is generated and uploaded to AWS S3, and the download link is provided to a user by Telegram bot.
+
+![Alt text](diagram.png?raw=true "Title")
 ## Author
 
 - [Eugeny Sokolov](https://linkedin.com/in/esklv)
