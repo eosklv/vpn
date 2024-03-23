@@ -14,12 +14,13 @@ BASE_URL = "https://api.telegram.org/bot{}".format(TOKEN)
 s3_client = boto3.client('s3')
 
 
-def send_message(chat_id, response, parse_mode = False):
+def send_message(chat_id, response, parse_mode=False):
     data = {"text": response.encode("utf8"), "chat_id": chat_id}
     if parse_mode:
         data["parse_mode"] = parse_mode
     url = BASE_URL + "/sendMessage"
     requests.post(url, data)
+
 
 def handler(event, context):
     try:
@@ -35,8 +36,10 @@ def handler(event, context):
             send_message(chat_id, "Not that bad! What are we doing today?")
 
         elif "run" in message:
-            send_message(chat_id, "Here we go... Hold on a moment...")  
-            s = s3_client.generate_presigned_url('get_object', Params = {'Bucket': 'esklv-vpn', 'Key': 'profiles/client.ovpn'}, ExpiresIn = 300)
+            send_message(chat_id, "Here we go... Hold on a moment...")
+            s = s3_client.generate_presigned_url('get_object',
+                                                 Params={'Bucket': 'esklv-vpn', 'Key': 'profiles/client.ovpn'},
+                                                 ExpiresIn=300)
             send_message(chat_id, f"Your VPN profile is available by [this]({s}) link", "MarkdownV2")
             send_message(chat_id, "Bear in mind that this link is expiring in 5 minutes.")
 

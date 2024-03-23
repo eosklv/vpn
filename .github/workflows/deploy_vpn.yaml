@@ -1,5 +1,7 @@
 name: Deploy infrastructure using Terraform
-on: [repository_dispatch]
+on:
+  repository_dispatch:
+    type: [deploy_terraform]
 permissions:
   id-token: write
   contents: read
