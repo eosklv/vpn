@@ -65,8 +65,8 @@ def handler(event, context):
 
         elif "run" in message:
             send_message(chat_id, "Here we go... Hold on a moment...")
-            tf = Terraform(working_dir='./terraform')
-            return_code, stdout, stderr = tf.plan()
+            # tf = Terraform(working_dir='./terraform')
+            # return_code, stdout, stderr = tf.plan()
             s = s3_client.generate_presigned_url('get_object',
                                                  Params={'Bucket': 'esklv-vpn', 'Key': 'profiles/client.ovpn'},
                                                  ExpiresIn=300)
