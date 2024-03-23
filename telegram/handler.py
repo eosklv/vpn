@@ -35,7 +35,7 @@ def handler(event, context):
         elif "run" in message:
             send_message(chat_id, "Here we go... Hold on a moment...")  
             s = s3_client.generate_presigned_url('get_object', Params = {'Bucket': 'esklv-vpn', 'Key': 'profiles/client.ovpn'}, ExpiresIn = 300)
-            send_message(chat_id, f'Your VPN profile is available by "<a href='{s}'>this</a>" link.')
+            send_message(chat_id, f"Your VPN profile is available by <a href={s}>this</a> link.")
             send_message(chat_id, "Bear in mind that this link is expiring in 5 minutes.")
 
         elif "destroy" in message.lower():
