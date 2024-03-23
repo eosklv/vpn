@@ -33,6 +33,7 @@ jobs:
         uses: serverless/github-action@v3.2
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
         with:
           args: -c "cd ./telegram && serverless deploy"
           entrypoint: /bin/sh

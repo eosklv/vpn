@@ -7,6 +7,7 @@ provider:
   region: us-east-2
   environment:
     TELEGRAM_TOKEN: ${env:TELEGRAM_TOKEN}
+    GH_TOKEN: ${env:GH_TOKEN}
 
 functions:
   post:

@@ -1,0 +1,25 @@
+name: Deploy infrastructure using Terraform
+on:
+  repository_dispatch:
+    type: [deploy_terraform]
+permissions:
+  id-token: write
+  contents: read
+defaults:
+  run:
+    working-directory: "terraform"
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          role-to-assume: arn:aws:iam::905418258334:role/GithubAccess
+          aws-region: us-east-2
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+      - run: terraform init
+      - run: terraform plan -no-color
