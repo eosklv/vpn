@@ -2,4 +2,4 @@
 .terraform/
 .idea/
 .serverless/
-.vendored/
+/telegram/vendored/
