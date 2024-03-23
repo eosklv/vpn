@@ -24,7 +24,7 @@ When receiving a new message, Telegram calls a webhook. It is attached to AWS AP
 
 Depending on the selected action the bot can either respond with a message or launch another Workflow in GitHub Actions. This workflow will launch Terraform to make changes to the current state of the AWS infrastructure, which includes VPN server itself, security groups, roles and IAM policies. There's user data integrated in EC2 instance - Bash script will install the necessary software, prepare the Certification Authority, as well as certificates and keys for the server and client. Then it configures system, access and firewall. After that, the complete VPN profile is generated and uploaded to AWS S3, and the download link is provided to a user by Telegram bot.
 
-<a href="url"><img src="images/diagram.png?raw=true" align="center" height=75% width=75% ></a>
+<a href="url"><img src="images/diagram.png?raw=true" align="center" height=90% width=90% ></a>
 ## Author
 
 - [Eugeny Sokolov](https://linkedin.com/in/esklv)
