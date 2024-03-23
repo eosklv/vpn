@@ -30,10 +30,6 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r ./telegram/requirements.txt -t ./telegram/.vendored
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
       - name: Enter dir and deploy
         uses: serverless/github-action@v3.2
         env:
