@@ -21,6 +21,7 @@ jobs:
         run: |
           aws s3 sync ./scripts s3://esklv-vpn/scripts/
           aws s3 sync ./configs s3://esklv-vpn/configs/
+          aws s3 sync ./terraform s3://esklv-vpn/terraform/
       - name: Set up Python
         uses: actions/setup-python@v4
         with:

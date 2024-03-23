@@ -7,19 +7,41 @@ here = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.join(here, "./.vendored"))
 
 import requests
+import python_terraform
+# tf = Terraform(working_dir='./terraform')
+# tf.plan()
 
-TOKEN = os.environ['TELEGRAM_TOKEN']
-BASE_URL = "https://api.telegram.org/bot{}".format(TOKEN)
+TELEGRAM_TOKEN = os.environ['TELEGRAM_TOKEN']
+TELEGRAM_URL = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}"
+
+# GH_TOKEN = os.environ['GH_TOKEN']
+# GH_URL = "https://api.github.com/repos/eosklv/vpn/dispatches"
 
 s3_client = boto3.client('s3')
 
 
+# def github_call():
+#     payload = json.dumps({
+#       "event_type": "deploy_terraform",
+#       "client_payload": {
+#         "unit": False,
+#         "integration": True
+#       }
+#     })
+#     headers = {
+#       'Accept': 'application/vnd.github+json',
+#       'Authorization': f'Bearer {GITHUB_TOKEN}',
+#       'X-GitHub-Api-Version': '2022-11-28',
+#       'Content-Type': 'application/json'
+#     }
+#     return requests.post(GITHUB_URL, headers=headers, data=payload)
+
 def send_message(chat_id, response, parse_mode=False):
-    data = {"text": response.encode("utf8"), "chat_id": chat_id}
+    payload = {"text": response.encode("utf8"), "chat_id": chat_id}
     if parse_mode:
         data["parse_mode"] = parse_mode
-    url = BASE_URL + "/sendMessage"
-    requests.post(url, data)
+    url = TELEGRAM_URL + "/sendMessage"
+    requests.post(url, data=payload)
 
 
 def handler(event, context):
