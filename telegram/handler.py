@@ -14,6 +14,11 @@ BASE_URL = "https://api.telegram.org/bot{}".format(TOKEN)
 s3_client = boto3.client('s3')
 
 
+def send_message(chat_id, response):
+    data = {"text": response.encode("utf8"), "chat_id": chat_id}
+    url = BASE_URL + "/sendMessage"
+    requests.post(url, data)
+
 def handler(event, context):
     try:
         data = json.loads(event["body"])
@@ -22,28 +27,25 @@ def handler(event, context):
         first_name = data["message"]["chat"]["first_name"]
 
         if "start" in message:
-            response = f"Long time no see, {first_name}!"
+            send_message(chat_id, f"Long time no see, {first_name}!")
 
         elif "how are you" in message:
-            response = "Not that bad! What are we doing today?"
+            send_message(chat_id, "Not that bad! What are we doing today?")
 
         elif "run" in message:
-            response = "Here we go... Hold on a second...\n"
-            response += "Your VPN profile is available by the link:\n"
+            send_message(chat_id, "Here we go... Hold on a moment...")  
             s = s3_client.generate_presigned_url('get_object', Params = {'Bucket': 'esklv-vpn', 'Key': 'profiles/client.ovpn'}, ExpiresIn = 300)
-            response += f"{s}\n"
-            response += "This link is expiring in 5 minutes."
+            send_message(chat_id, f'Your VPN profile is available by "<a href='{s}'>this</a>" link.')
+            send_message(chat_id, "Bear in mind that this link is expiring in 5 minutes.")
 
         elif "destroy" in message.lower():
-            response = "I'll try my best, but can't promise... Hold on a second..."
-            response += "I've done my dirty work.\n"
-            
-        else:
-            response = "Thank you... Thank you for being so dumb!"
+            send_message(chat_id, "I'll try my best, but can't promise... Hold on a moment...")
+            send_message(chat_id, "I've done my dirty work.")
 
-        data = {"text": response.encode("utf8"), "chat_id": chat_id}
-        url = BASE_URL + "/sendMessage"
-        requests.post(url, data)
+        else:
+            send_message(chat_id, "Thank you... Thank you for being so dumb!")
+
+
 
     except Exception as e:
         print(e)
