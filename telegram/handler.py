@@ -32,7 +32,7 @@ def github_call():
       'X-GitHub-Api-Version': '2022-11-28',
       'Content-Type': 'application/json'
     }
-    requests.post(GH_URL, headers=headers, data=payload)
+    return requests.post(GH_URL, headers=headers, data=payload)
 
 def downloadDirectoryFroms3(bucketName, remoteDirectoryName):
     s3_resource = boto3.resource('s3')

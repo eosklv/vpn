@@ -1,6 +1,6 @@
 name: Deploy infrastructure using Terraform
 on:
-  repository_dispatch:
+  workflow_dispatch:
     type: [deploy_terraform]
     inputs:
       dispatch_id:
