@@ -1,0 +1,15 @@
+name: ID Example
+
+on:
+  workflow_dispatch:
+    inputs:
+      id:
+        description: 'run identifier'
+        required: false
+jobs:
+  id:
+    name: Workflow ID Provider
+    runs-on: ubuntu-latest
+    steps:
+      - name: ${{github.event.inputs.id}}
+        run: echo run identifier ${{ inputs.id }}
