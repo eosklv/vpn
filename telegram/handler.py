@@ -32,7 +32,7 @@ def github_call():
       'X-GitHub-Api-Version': '2022-11-28',
       'Content-Type': 'application/json'
     }
-    return requests.post(GH_URL, headers=headers, data=payload)
+    requests.post(GH_URL, headers=headers, data=payload)
 
 def downloadDirectoryFroms3(bucketName, remoteDirectoryName):
     s3_resource = boto3.resource('s3')
@@ -66,7 +66,10 @@ def handler(event, context):
         elif "run" in message:
             send_message(chat_id, "Here we go... Hold on a moment...")
             m = github_call()
-            send_message(chat_id, m)
+            if m.status_code != 204:
+                send_message(chat_id, "Cannot call GitHub, please check the logs.")
+                raise Exception
+            
             s = s3_client.generate_presigned_url('get_object',
                                                  Params={'Bucket': 'esklv-vpn', 'Key': 'profiles/client.ovpn'},
                                                  ExpiresIn=300)
