@@ -3,7 +3,6 @@ import os
 import sys
 import boto3
 import datetime
-import time
 
 here = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.join(here, "./vendored"))
@@ -71,7 +70,7 @@ def handler(event, context):
         elif "run" in message:
             rc = gh_dispatch("apply")
             if rc == 204:
-                send_message(chat_id, f"The job is launched.")
+                send_message(chat_id, f"The job is launched, please track the status.")
             else:
                 send_message(chat_id, f"Cannot call GitHub, response code: {rc}. Please check the logs.")
                 raise Exception
@@ -80,30 +79,29 @@ def handler(event, context):
             gh_track(chat_id)
             if prefix_exists(S3_BUCKET, S3_PROFILE):
                 s = S3_CLIENT.generate_presigned_url("get_object", Params={"Bucket": S3_BUCKET, "Key": S3_PROFILE},
-                                                 ExpiresIn=300)
-                send_message(chat_id, f"Your VPN profile is available by [this]({s}) link", "MarkdownV2")
-                send_message(chat_id, "Bear in mind that this link is expiring in 5 minutes.")
+                                                     ExpiresIn=300)
+                send_message(chat_id, f"Download your VPN profile by [this]({s}) link", "MarkdownV2")
             else:
                 send_message(chat_id, "The profile is removed or not available yet.")
 
-        elif "thanks" in message or "thank you" in message:
+        elif "thank" in message:
             send_message(chat_id, "I know you’d do the same for me.")
 
-        elif "destroy" in message.lower():
+        elif "destroy" in message:
             rc = gh_dispatch("destroy")
             if rc == 204:
-                send_message(chat_id, f"The job is launched.")
+                send_message(chat_id, f"The job is launched, please track the status.")
             else:
                 send_message(chat_id, f"Cannot call GitHub, response code: {rc}. Please check the logs.")
                 raise Exception
             s = S3_CLIENT.delete_object(Bucket=S3_BUCKET, Key=S3_PROFILE)
 
         elif "bye" in message:
-            send_message(chat_id, "Talk to you soon.")
+            send_message(chat_id, f"Talk to you soon, {first_name}!")
 
         else:
             send_message(chat_id, "Thank you... Thank you for being so dumb!")
-    
+
     except Exception as e:
         print(e)
 
