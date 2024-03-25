@@ -2,6 +2,7 @@ import json
 import os
 import sys
 import boto3
+import datetime
 import time
 
 here = os.path.dirname(os.path.realpath(__file__))
@@ -13,36 +14,47 @@ TELEGRAM_TOKEN = os.environ['TELEGRAM_TOKEN']
 TELEGRAM_URL = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}"
 
 GH_TOKEN = os.environ['GH_TOKEN']
-GH_URL = "https://api.github.com/repos/eosklv/vpn/dispatches"
-
+GH_OWNER = "eosklv"
+GH_REPO = "vpn"
+GH_WORKFLOW = "test.yml"
+GH_URL = f"https://api.github.com/repos/{GH_OWNER}/{GH_REPO}"
+authHeader = {"Authorization": f"Bearer {token}"}
 s3_client = boto3.client('s3')
 
 
-def github_call():
-    payload = json.dumps({
-      "event_type": "deploy_terraform",
-      "client_payload": {
-        "unit": False,
-        "integration": True
-      }
-    })
-    headers = {
-      'Accept': 'application/vnd.github+json',
-      'Authorization': f'Bearer {GH_TOKEN}',
-      'X-GitHub-Api-Version': '2022-11-28',
-      'Content-Type': 'application/json'
-    }
-    return requests.post(GH_URL, headers=headers, data=payload)
+def gh_dispatch():
+    payload = json.dumps({"ref": "main"})
+    r = requests.post(GH_URL + f"/actions/workflows/{GH_WORKFLOW}/dispatches", headers=authHeader, data=payload)
+    return r.status_code
+
+
+def gh_track(chat_id):
+    t = (datetime.datetime.utcnow() - datetime.timedelta(minutes=2)).strftime("%Y-%m-%dT%H:%M")
+    inprogress = True
+    while inprogress:
+        r = requests.get(GH_URL + f"/actions/runs?created=%3E{t}", headers=authHeader)
+        runs = r.json()["workflow_runs"]
+        if len(runs) > 0:
+            if runs[0]["status"] == "Completed":
+                send_message(chat_id, f"Completed, conclusion: {runs[0]["conclusion"]}")
+                inprogress = False
+            else:
+                send_message(chat_id, "Still waiting...")
+                time.sleep(10)a
+        else:
+            send_message(chat_id, "Still waiting...")
+            time.sleep(10)
 
 def downloadDirectoryFroms3(bucketName, remoteDirectoryName):
     s3_resource = boto3.resource('s3')
-    bucket = s3_resource.Bucket(bucketName) 
-    for obj in bucket.objects.filter(Prefix = remoteDirectoryName):
+    bucket = s3_resource.Bucket(bucketName)
+    for obj in bucket.objects.filter(Prefix=remoteDirectoryName):
         if not os.path.exists(os.path.dirname(obj.key)):
             os.makedirs(os.path.dirname(obj.key))
         bucket.download_file(obj.key, obj.key)
 
-def send_message(chat_id, response, parse_mode=False):
+
+def send_message(chat_id, response, parse_mode=''):
     payload = {"text": response.encode("utf8"), "chat_id": chat_id}
     if parse_mode:
         payload["parse_mode"] = parse_mode
@@ -65,11 +77,10 @@ def handler(event, context):
 
         elif "run" in message:
             send_message(chat_id, "Here we go... Hold on a moment...")
-            m = github_call()
-            if m.status_code != 204:
+            if gh_dispatch() != 204:
                 send_message(chat_id, "Cannot call GitHub, please check the logs.")
                 raise Exception
-            
+            gh_track(chat_id)
             s = s3_client.generate_presigned_url('get_object',
                                                  Params={'Bucket': 'esklv-vpn', 'Key': 'profiles/client.ovpn'},
                                                  ExpiresIn=300)
@@ -88,9 +99,6 @@ def handler(event, context):
 
         else:
             send_message(chat_id, "Thank you... Thank you for being so dumb!")
-
-
-
     except Exception as e:
         print(e)
 
