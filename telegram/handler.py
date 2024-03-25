@@ -76,8 +76,9 @@ def handler(event, context):
 
         elif "run" in message:
             send_message(chat_id, "Here we go... Hold on a moment...")
-            if gh_dispatch("apply") != 204:
-                send_message(chat_id, "Cannot call GitHub, please check the logs.")
+            rc = gh_dispatch("apply")
+            if rc != 204:
+                send_message(chat_id, f"Cannot call GitHub, response code: {rc}. Please check the logs.")
                 raise Exception
             gh_track(chat_id)
             while not prefix_exits(S3_BUCKET, S3_PROFILE):
