@@ -31,21 +31,14 @@ def gh_dispatch(action=""):
 
 
 def gh_track(chat_id):
-    t = (datetime.datetime.utcnow() - datetime.timedelta(minutes=1)).strftime("%Y-%m-%dT%H:%M")
-    inprogress = True
-    while inprogress:
-        r = requests.get(GH_URL + f"/actions/runs?created=%3E{t}", headers=GH_AUTH)
-        runs = r.json()["workflow_runs"]
-        if len(runs) > 0:
-            if runs[0]["status"] == "completed":
-                send_message(chat_id, f"Completed, conclusion: {runs[0]['conclusion']}")
-                inprogress = False
-            else:
-                send_message(chat_id, f"Still waiting, status: {runs[0]['status']}...")
-                time.sleep(5)
-        else:
-            # send_message(chat_id, "Still waiting...")
-            time.sleep(5)
+    t = (datetime.datetime.utcnow() - datetime.timedelta(minutes=2)).strftime("%Y-%m-%dT%H:%M")
+    r = requests.get(GH_URL + f"/actions/runs?created=%3E{t}", headers=GH_AUTH)
+    runs = r.json()["workflow_runs"]
+    if len(runs) > 0:
+        send_message(chat_id, f"Status: {runs[0]['status']}")
+        send_message(chat_id, f"Conclusion: {runs[0]['conclusion']}")
+    else:
+        send_message(chat_id, "Not started yet.")
 
 
 def send_message(chat_id, response, parse_mode=""):
@@ -68,9 +61,6 @@ def handler(event, context):
         chat_id = data["message"]["chat"]["id"]
         first_name = data["message"]["chat"]["first_name"]
 
-        if processing:
-            return {"statusCode": 200}
-
         if "start" in message or "hi" in message or "hello" in message or "hey" in message:
             send_message(chat_id, f"Long time no see, {first_name}!")
 
@@ -80,19 +70,22 @@ def handler(event, context):
         elif "run" in message:
             send_message(chat_id, "Here we go... Hold on a moment...")
             rc = gh_dispatch("apply")
-            if rc != 204:
+            if rc == 204:
+                send_message(chat_id, f"The job is launched.")
+            else:
                 send_message(chat_id, f"Cannot call GitHub, response code: {rc}. Please check the logs.")
                 raise Exception
-            processing = True
+
+        elif "status" in message or "profile" in message:
+            send_message(chat_id, "Checking...")
             gh_track(chat_id)
-            while not prefix_exists(S3_BUCKET, S3_PROFILE):
-                send_message(chat_id, "Still waiting, status: preparing VPN profile")
-                time.sleep(5)
-            processing = False
-            s = S3_CLIENT.generate_presigned_url("get_object", Params={"Bucket": S3_BUCKET, "Key": S3_PROFILE},
+            if prefix_exists(S3_BUCKET, S3_PROFILE):
+                s = S3_CLIENT.generate_presigned_url("get_object", Params={"Bucket": S3_BUCKET, "Key": S3_PROFILE},
                                                  ExpiresIn=300)
-            send_message(chat_id, f"Your VPN profile is available by [this]({s}) link", "MarkdownV2")
-            send_message(chat_id, "Bear in mind that this link is expiring in 5 minutes.")
+                send_message(chat_id, f"Your VPN profile is available by [this]({s}) link", "MarkdownV2")
+                send_message(chat_id, "Bear in mind that this link is expiring in 5 minutes.")
+            else:
+                send_message(chat_id, "The profile is removed or not available yet.")
 
         elif "thanks" in message or "thank you" in message:
             send_message(chat_id, "I know you’d do the same for me.")
@@ -100,12 +93,12 @@ def handler(event, context):
         elif "destroy" in message.lower():
             send_message(chat_id, "I'll try my best, but can't promise... Hold on a moment...")
             rc = gh_dispatch("destroy")
-            if rc != 204:
+            if rc == 204:
+                send_message(chat_id, f"The job is launched.")
+            else:
                 send_message(chat_id, f"Cannot call GitHub, response code: {rc}. Please check the logs.")
                 raise Exception
-            processing = True
-            gh_track(chat_id)
-            processing = False
+            # gh_track(chat_id)
             s = S3_CLIENT.delete_object(Bucket=S3_BUCKET, Key=S3_PROFILE)
             send_message(chat_id, "I've done my dirty work.")
 
