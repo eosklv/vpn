@@ -3,7 +3,7 @@
 
 This project was created to demonstrate the capabilities of cloud engineering and process automation using various CI/CD and IaC tools.
 
-Using simple commands in the telegram bot, the user can create his own free (within AWS Free Tier) OpenVPN server with a dedicated public IP address in the selected region. He can also configure this VPN server without connecting via SSH. When the work is done, the entire infrastructure can be automatically destroyed.
+By chatting with the telegram bot, the user can create his own free (within AWS Free Tier) OpenVPN server with a dedicated public IP address in the selected region. He can also configure this VPN server without connecting via SSH. When the work is done, the entire infrastructure can be automatically destroyed.
 
 <a href="url"><img src="images/screenshot.png?raw=true" align="center" height=55% width=55% ></a>
 ## Tech Stack
