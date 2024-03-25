@@ -1,5 +1,16 @@
 name: Deploy infrastructure using Terraform
-on: [workflow_dispatch]
+on:
+  workflow_dispatch:
+    inputs:
+      id:
+        type: string
+        required: false
+      action:
+        type: choice
+        required: true
+        options: 
+        - apply
+        - destroy
 permissions:
   id-token: write
   contents: read
@@ -7,7 +18,14 @@ defaults:
   run:
     working-directory: "terraform"
 jobs:
+  id:
+    name: Workflow ID Provider
+    runs-on: ubuntu-latest
+    steps:
+      - name: ${{github.event.inputs.id}}
+        run: echo run identifier ${{ inputs.id }}
   deploy:
+    name: Terraform init and apply or destroy
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository code
@@ -20,4 +38,4 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
       - run: terraform init
-      - run: terraform apply
+      - run: terraform ${{ inputs.action }} 

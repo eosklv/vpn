@@ -23,8 +23,8 @@ GH_URL = f"https://api.github.com/repos/{GH_OWNER}/{GH_REPO}"
 s3_client = boto3.client('s3')
 
 
-def gh_dispatch():
-    payload = json.dumps({"ref": "main"})
+def gh_dispatch(action=''):
+    payload = json.dumps({"ref": "main", "inputs": {"action": action}})
     r = requests.post(GH_URL + f"/actions/workflows/{GH_WORKFLOW}/dispatches", headers=GH_AUTH, data=payload)
     return r.status_code
 
@@ -37,13 +37,13 @@ def gh_track(chat_id):
         runs = r.json()["workflow_runs"]
         if len(runs) > 0:
             if runs[0]["status"] == "completed":
-                print(f"Completed, conclusion: {runs[0]['conclusion']}")
+                send_message(chat_id, f"Completed, conclusion: {runs[0]['conclusion']}")
                 inprogress = False
             else:
-                print(f"Still waiting, status: {runs[0]['status']}...")
+                send_message(chat_id, f"Still waiting, status: {runs[0]['status']}...")
                 time.sleep(5)
         else:
-            print(f"Still waiting...")
+            send_message(chat_id, "Still waiting...")
             time.sleep(5)
 
 
@@ -94,6 +94,10 @@ def handler(event, context):
 
         elif "destroy" in message.lower():
             send_message(chat_id, "I'll try my best, but can't promise... Hold on a moment...")
+            if gh_dispatch('destroy') != 204:
+                send_message(chat_id, "Cannot call GitHub, please check the logs.")
+                raise Exception
+            gh_track(chat_id)
             send_message(chat_id, "I've done my dirty work.")
 
         elif "bye" in message:
