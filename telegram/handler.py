@@ -16,7 +16,7 @@ TELEGRAM_URL = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}"
 GH_AUTH = {"Authorization": f"Bearer {os.environ['GH_TOKEN']}"}
 GH_OWNER = "eosklv"
 GH_REPO = "vpn"
-GH_WORKFLOW = "test.yml"
+GH_WORKFLOW = "deploy_vpn.yml"
 GH_URL = f"https://api.github.com/repos/{GH_OWNER}/{GH_REPO}"
 
 S3_CLIENT = boto3.client("s3")
