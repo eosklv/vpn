@@ -14,7 +14,7 @@ Using simple commands in the telegram bot, the user can create his own free (wit
 
 **VPN Server:** OpenVPN, Ubuntu 22.04 LTS
 
-**Telergam bot:** AWS Lambda (Python 3.11), AWS API Gateway
+**Telergam bot:** AWS Lambda (Python 3.10), AWS API Gateway
 
 **CI/CD:** GitHub Actions, Serverless Framework, AWS S3
 
