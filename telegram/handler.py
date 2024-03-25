@@ -13,7 +13,7 @@ import requests
 TELEGRAM_TOKEN = os.environ["TELEGRAM_TOKEN"]
 TELEGRAM_URL = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}"
 
-GH_AUTH = {"Authorization": f"Bearer {os.environ["GH_TOKEN"]}"}
+GH_AUTH = {"Authorization": f"Bearer {os.environ['GH_TOKEN']}"}
 GH_OWNER = "eosklv"
 GH_REPO = "vpn"
 GH_WORKFLOW = "test.yml"
