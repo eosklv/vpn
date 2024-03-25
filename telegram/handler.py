@@ -75,7 +75,7 @@ def handler(event, context):
                 send_message(chat_id, f"Cannot call GitHub, response code: {rc}. Please check the logs.")
                 raise Exception
 
-        elif "status" in message or "profile" in message:
+        elif "status" in message or "now" in message or "profile" in message or "link" in message:
             gh_track(chat_id)
             if prefix_exists(S3_BUCKET, S3_PROFILE):
                 s = S3_CLIENT.generate_presigned_url("get_object", Params={"Bucket": S3_BUCKET, "Key": S3_PROFILE},
