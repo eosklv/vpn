@@ -19,6 +19,7 @@ defaults:
     working-directory: "terraform"
 jobs:
   id:
+    if: ${{ inputs.id }}
     name: Workflow ID Provider
     runs-on: ubuntu-latest
     steps:
@@ -38,4 +39,4 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
       - run: terraform init
-      - run: terraform ${{ inputs.action }} 
+      - run: terraform ${{ inputs.action }} --auto-approve
