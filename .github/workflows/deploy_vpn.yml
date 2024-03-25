@@ -18,7 +18,7 @@ jobs:
     steps:
       - name: ${{github.event.inputs.id}}
         run: echo run identifier ${{ inputs.id }}
-        run: sleep 30
+      - run: sleep 30
   # deploy:
   #   if: github.event.inputs.dispatch_id != ""
   #   steps:
