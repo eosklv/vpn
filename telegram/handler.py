@@ -68,6 +68,9 @@ def handler(event, context):
         chat_id = data["message"]["chat"]["id"]
         first_name = data["message"]["chat"]["first_name"]
 
+        if processing:
+            return {"statusCode": 200}
+
         if "start" in message or "hi" in message or "hello" in message or "hey" in message:
             send_message(chat_id, f"Long time no see, {first_name}!")
 
@@ -80,11 +83,12 @@ def handler(event, context):
             if rc != 204:
                 send_message(chat_id, f"Cannot call GitHub, response code: {rc}. Please check the logs.")
                 raise Exception
+            processing = True
             gh_track(chat_id)
             while not prefix_exists(S3_BUCKET, S3_PROFILE):
                 send_message(chat_id, "Still waiting, status: preparing VPN profile")
                 time.sleep(5)
-
+            processing = False
             s = S3_CLIENT.generate_presigned_url("get_object", Params={"Bucket": S3_BUCKET, "Key": S3_PROFILE},
                                                  ExpiresIn=300)
             send_message(chat_id, f"Your VPN profile is available by [this]({s}) link", "MarkdownV2")
@@ -99,7 +103,9 @@ def handler(event, context):
             if rc != 204:
                 send_message(chat_id, f"Cannot call GitHub, response code: {rc}. Please check the logs.")
                 raise Exception
+            processing = True
             gh_track(chat_id)
+            processing = False
             s = S3_CLIENT.delete_object(Bucket=S3_BUCKET, Key=S3_PROFILE)
             send_message(chat_id, "I've done my dirty work.")
 
