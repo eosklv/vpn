@@ -14,17 +14,18 @@ TELEGRAM_TOKEN = os.environ['TELEGRAM_TOKEN']
 TELEGRAM_URL = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}"
 
 GH_TOKEN = os.environ['GH_TOKEN']
+GH_AUTH = {"Authorization": f"Bearer {token}"}
 GH_OWNER = "eosklv"
 GH_REPO = "vpn"
 GH_WORKFLOW = "test.yml"
 GH_URL = f"https://api.github.com/repos/{GH_OWNER}/{GH_REPO}"
-authHeader = {"Authorization": f"Bearer {token}"}
+
 s3_client = boto3.client('s3')
 
 
 def gh_dispatch():
     payload = json.dumps({"ref": "main"})
-    r = requests.post(GH_URL + f"/actions/workflows/{GH_WORKFLOW}/dispatches", headers=authHeader, data=payload)
+    r = requests.post(GH_URL + f"/actions/workflows/{GH_WORKFLOW}/dispatches", headers=GH_AUTH, data=payload)
     return r.status_code
 
 
@@ -35,15 +36,16 @@ def gh_track(chat_id):
         r = requests.get(GH_URL + f"/actions/runs?created=%3E{t}", headers=authHeader)
         runs = r.json()["workflow_runs"]
         if len(runs) > 0:
-            if runs[0]["status"] == "Completed":
-                send_message(chat_id, f"Completed, conclusion: {runs[0]["conclusion"]}")
+            if runs[0]["status"] == "completed":
+                print(f"Completed, conclusion: {runs[0]['conclusion']}")
                 inprogress = False
             else:
-                send_message(chat_id, "Still waiting...")
-                time.sleep(10)a
+                print(f"Still waiting, status: {runs[0]['status']}...")
+                time.sleep(5)
         else:
-            send_message(chat_id, "Still waiting...")
-            time.sleep(10)
+            print(f"Still waiting...")
+            time.sleep(5)
+
 
 def downloadDirectoryFroms3(bucketName, remoteDirectoryName):
     s3_resource = boto3.resource('s3')
