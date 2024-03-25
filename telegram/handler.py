@@ -35,11 +35,11 @@ def gh_track(chat_id):
     r = requests.get(GH_URL + f"/actions/runs?created=%3E{t}", headers=GH_AUTH)
     runs = r.json()["workflow_runs"]
     if len(runs) > 0:
-        send_message(chat_id, f"Status: {runs[0]['status']}")
+        send_message(chat_id, f"Job status: {runs[0]['status']}")
         if runs[0]['conclusion']:
-            send_message(chat_id, f"Conclusion: {runs[0]['conclusion']}")
+            send_message(chat_id, f"Job conclusion: {runs[0]['conclusion']}")
     else:
-        send_message(chat_id, "Not started yet.")
+        send_message(chat_id, "No active jobs.")
 
 
 def send_message(chat_id, response, parse_mode=""):
