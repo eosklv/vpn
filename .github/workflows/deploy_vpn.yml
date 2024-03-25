@@ -2,9 +2,6 @@ name: Deploy infrastructure using Terraform
 on:
   workflow_dispatch:
     inputs:
-      # id:
-      #   type: string
-      #   required: false
       action:
         type: choice
         required: true
@@ -18,13 +15,6 @@ defaults:
   run:
     working-directory: "terraform"
 jobs:
-  # id:
-  #   if: ${{ inputs.id }}
-  #   name: Workflow ID Provider
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: ${{github.event.inputs.id}}
-  #       run: echo run identifier ${{ inputs.id }}
   deploy:
     name: Terraform init and apply or destroy
     runs-on: ubuntu-latest

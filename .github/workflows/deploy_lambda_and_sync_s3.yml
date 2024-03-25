@@ -1,5 +1,11 @@
 name: Deploy application to Lambda and sync files with S3
-on: [push]
+on: 
+  push:
+    paths:
+      - '.github/**'
+      - 'configs/**'
+      - 'scripts/**'
+      - 'telegram/**'
 permissions:
   id-token: write
   contents: read
