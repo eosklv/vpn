@@ -1,10 +1,5 @@
 name: Deploy infrastructure using Terraform
-on:
-  workflow_dispatch:
-    inputs:
-      id:
-        required: false
-        type: string
+on: [workflow_dispatch]
 permissions:
   id-token: write
   contents: read
@@ -13,19 +8,17 @@ defaults:
     working-directory: "terraform"
 jobs:
   deploy:
+    runs-on: ubuntu-latest
     steps:
-      - run: sleep 20
-  #     - run: echo "💁 The dispatch ID is ${{ github.event.inputs.dispatch_id }}"
-  #     runs-on: ubuntu-latest
-  #     - name: Check out repository code
-  #       uses: actions/checkout@v4
-  #     - name: Configure AWS Credentials
-  #       uses: aws-actions/configure-aws-credentials@v4
-  #       with:
-  #         role-to-assume: arn:aws:iam::905418258334:role/GithubAccess
-  #         aws-region: us-east-2
-  #     - name: Setup Terraform
-  #       uses: hashicorp/setup-terraform@v3
+      - name: Check out repository code
+        uses: actions/checkout@v4
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::905418258334:role/GithubAccess
+          aws-region: us-east-2
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
   #     - run: terraform init
   #     - run: terraform plan -no-color
   #     - uses: martialonline/workflow-status@v4
