@@ -36,7 +36,8 @@ def gh_track(chat_id):
     runs = r.json()["workflow_runs"]
     if len(runs) > 0:
         send_message(chat_id, f"Status: {runs[0]['status']}")
-        send_message(chat_id, f"Conclusion: {runs[0]['conclusion']}")
+        if runs[0]['conclusion']:
+            send_message(chat_id, f"Conclusion: {runs[0]['conclusion']}")
     else:
         send_message(chat_id, "Not started yet.")
 
@@ -99,7 +100,6 @@ def handler(event, context):
                 send_message(chat_id, f"Cannot call GitHub, response code: {rc}. Please check the logs.")
                 raise Exception
             s = S3_CLIENT.delete_object(Bucket=S3_BUCKET, Key=S3_PROFILE)
-            send_message(chat_id, "I've done my dirty work.")
 
         elif "bye" in message:
             send_message(chat_id, "Talk to you soon.")
