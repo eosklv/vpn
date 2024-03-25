@@ -13,8 +13,7 @@ import requests
 TELEGRAM_TOKEN = os.environ['TELEGRAM_TOKEN']
 TELEGRAM_URL = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}"
 
-GH_TOKEN = os.environ['GH_TOKEN']
-GH_AUTH = {"Authorization": f"Bearer {token}"}
+GH_AUTH = {"Authorization": f"Bearer {os.environ['GH_TOKEN']}"}
 GH_OWNER = "eosklv"
 GH_REPO = "vpn"
 GH_WORKFLOW = "test.yml"
@@ -35,7 +34,7 @@ def gh_track(chat_id):
     t = (datetime.datetime.utcnow() - datetime.timedelta(minutes=2)).strftime("%Y-%m-%dT%H:%M")
     inprogress = True
     while inprogress:
-        r = requests.get(GH_URL + f"/actions/runs?created=%3E{t}", headers=authHeader)
+        r = requests.get(GH_URL + f"/actions/runs?created=%3E{t}", headers=GH_AUTH)
         runs = r.json()["workflow_runs"]
         if len(runs) > 0:
             if runs[0]["status"] == "completed":
