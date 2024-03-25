@@ -1,9 +1,8 @@
 name: Deploy infrastructure using Terraform
 on:
   workflow_dispatch:
-    type: [deploy_terraform]
     inputs:
-      dispatch_id:
+      id:
         required: false
         type: string
 permissions:
@@ -13,27 +12,34 @@ defaults:
   run:
     working-directory: "terraform"
 jobs:
-  deploy:
-    if: github.event.inputs.dispatch_id != ''
+  id:
+    name: Workflow ID Provider
+    runs-on: ubuntu-latest
     steps:
-      - run: echo "💁 The dispatch ID is ${{ github.event.inputs.dispatch_id }}"
-      runs-on: ubuntu-latest
-      - name: Check out repository code
-        uses: actions/checkout@v4
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: arn:aws:iam::905418258334:role/GithubAccess
-          aws-region: us-east-2
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
-      - run: terraform init
-      - run: terraform plan -no-color
-      - uses: martialonline/workflow-status@v4
-        id: check
-      - run: echo "Workflow failed"
-        if: steps.check.outputs.status == 'failure'
-      - run: echo "Workflow was cancelled"
-        if: steps.check.outputs.status == 'cancelled'
-      - run: echo "Workflow was successful"
-        if: steps.check.outputs.status == 'success'
+      - name: ${{github.event.inputs.id}}
+        run: echo run identifier ${{ inputs.id }}
+    run: sleep 30
+  # deploy:
+  #   if: github.event.inputs.dispatch_id != ""
+  #   steps:
+  #     - run: echo "💁 The dispatch ID is ${{ github.event.inputs.dispatch_id }}"
+  #     runs-on: ubuntu-latest
+  #     - name: Check out repository code
+  #       uses: actions/checkout@v4
+  #     - name: Configure AWS Credentials
+  #       uses: aws-actions/configure-aws-credentials@v4
+  #       with:
+  #         role-to-assume: arn:aws:iam::905418258334:role/GithubAccess
+  #         aws-region: us-east-2
+  #     - name: Setup Terraform
+  #       uses: hashicorp/setup-terraform@v3
+  #     - run: terraform init
+  #     - run: terraform plan -no-color
+  #     - uses: martialonline/workflow-status@v4
+  #       id: check
+  #     - run: echo "Workflow failed"
+  #       if: steps.check.outputs.status == "failure"
+  #     - run: echo "Workflow was cancelled"
+  #       if: steps.check.outputs.status == "cancelled"
+  #     - run: echo "Workflow was successful"
+  #       if: steps.check.outputs.status == "success"
