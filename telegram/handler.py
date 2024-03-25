@@ -31,20 +31,20 @@ def gh_dispatch(action=""):
 
 
 def gh_track(chat_id):
-    t = (datetime.datetime.utcnow() - datetime.timedelta(minutes=2)).strftime("%Y-%m-%dT%H:%M")
+    t = (datetime.datetime.utcnow() - datetime.timedelta(minutes=1)).strftime("%Y-%m-%dT%H:%M")
     inprogress = True
     while inprogress:
         r = requests.get(GH_URL + f"/actions/runs?created=%3E{t}", headers=GH_AUTH)
         runs = r.json()["workflow_runs"]
         if len(runs) > 0:
             if runs[0]["status"] == "completed":
-                send_message(chat_id, f"Completed, conclusion: {runs[0]['conclusion']}")
+                # send_message(chat_id, f"Completed, conclusion: {runs[0]['conclusion']}")
                 inprogress = False
             else:
-                send_message(chat_id, f"Still waiting, status: {runs[0]['status']}...")
+                # send_message(chat_id, f"Still waiting, status: {runs[0]['status']}...")
                 time.sleep(5)
         else:
-            send_message(chat_id, "Still waiting...")
+            # send_message(chat_id, "Still waiting...")
             time.sleep(5)
 
 
