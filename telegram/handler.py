@@ -20,7 +20,9 @@ GH_REPO = "vpn"
 GH_WORKFLOW = "test.yml"
 GH_URL = f"https://api.github.com/repos/{GH_OWNER}/{GH_REPO}"
 
-s3_client = boto3.client('s3')
+S3_CLIENT = boto3.client('s3')
+S3_BUCKET = "esklv-vpn"
+S3_PROFILE = "profiles/client.ovpn"
 
 
 def gh_dispatch(action=''):
@@ -47,21 +49,17 @@ def gh_track(chat_id):
             time.sleep(5)
 
 
-def downloadDirectoryFroms3(bucketName, remoteDirectoryName):
-    s3_resource = boto3.resource('s3')
-    bucket = s3_resource.Bucket(bucketName)
-    for obj in bucket.objects.filter(Prefix=remoteDirectoryName):
-        if not os.path.exists(os.path.dirname(obj.key)):
-            os.makedirs(os.path.dirname(obj.key))
-        bucket.download_file(obj.key, obj.key)
-
-
 def send_message(chat_id, response, parse_mode=''):
     payload = {"text": response.encode("utf8"), "chat_id": chat_id}
     if parse_mode:
         payload["parse_mode"] = parse_mode
     url = TELEGRAM_URL + "/sendMessage"
     requests.post(url, data=payload)
+
+
+def prefix_exits(bucket, prefix):
+    res = S3_CLIENT.list_objects_v2(Bucket=bucket, Prefix=prefix)
+    return 'Contents' in res
 
 
 def handler(event, context):
@@ -83,8 +81,11 @@ def handler(event, context):
                 send_message(chat_id, "Cannot call GitHub, please check the logs.")
                 raise Exception
             gh_track(chat_id)
-            s = s3_client.generate_presigned_url('get_object',
-                                                 Params={'Bucket': 'esklv-vpn', 'Key': 'profiles/client.ovpn'},
+            while not prefix_exits(S3_BUCKET, S3_PROFILE):
+                send_message(chat_id, "Still waiting, status: preparing VPN profile")
+                time.sleep(5)
+
+            s = S3_CLIENT.generate_presigned_url('get_object', Params={'Bucket': S3_BUCKET, 'Key': S3_PROFILE},
                                                  ExpiresIn=300)
             send_message(chat_id, f"Your VPN profile is available by [this]({s}) link", "MarkdownV2")
             send_message(chat_id, "Bear in mind that this link is expiring in 5 minutes.")
@@ -98,6 +99,7 @@ def handler(event, context):
                 send_message(chat_id, "Cannot call GitHub, please check the logs.")
                 raise Exception
             gh_track(chat_id)
+            s = S3_CLIENT.delete_object(Bucket=S3_BUCKET, Key=S3_PROFILE)
             send_message(chat_id, "I've done my dirty work.")
 
         elif "bye" in message:
