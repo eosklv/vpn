@@ -38,10 +38,10 @@ def gh_track(chat_id):
         runs = r.json()["workflow_runs"]
         if len(runs) > 0:
             if runs[0]["status"] == "completed":
-                # send_message(chat_id, f"Completed, conclusion: {runs[0]['conclusion']}")
+                send_message(chat_id, f"Completed, conclusion: {runs[0]['conclusion']}")
                 inprogress = False
             else:
-                # send_message(chat_id, f"Still waiting, status: {runs[0]['status']}...")
+                send_message(chat_id, f"Still waiting, status: {runs[0]['status']}...")
                 time.sleep(5)
         else:
             # send_message(chat_id, "Still waiting...")
@@ -56,7 +56,7 @@ def send_message(chat_id, response, parse_mode=""):
     requests.post(url, data=payload)
 
 
-def prefix_exits(bucket, prefix):
+def prefix_exists(bucket, prefix):
     res = S3_CLIENT.list_objects_v2(Bucket=bucket, Prefix=prefix)
     return "Contents" in res
 
@@ -81,7 +81,7 @@ def handler(event, context):
                 send_message(chat_id, f"Cannot call GitHub, response code: {rc}. Please check the logs.")
                 raise Exception
             gh_track(chat_id)
-            while not prefix_exits(S3_BUCKET, S3_PROFILE):
+            while not prefix_exists(S3_BUCKET, S3_PROFILE):
                 send_message(chat_id, "Still waiting, status: preparing VPN profile")
                 time.sleep(5)
 
