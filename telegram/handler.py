@@ -69,7 +69,6 @@ def handler(event, context):
             send_message(chat_id, "Not that bad! What are we doing today?")
 
         elif "run" in message:
-            send_message(chat_id, "Here we go... Hold on a moment...")
             rc = gh_dispatch("apply")
             if rc == 204:
                 send_message(chat_id, f"The job is launched.")
@@ -78,7 +77,6 @@ def handler(event, context):
                 raise Exception
 
         elif "status" in message or "profile" in message:
-            send_message(chat_id, "Checking...")
             gh_track(chat_id)
             if prefix_exists(S3_BUCKET, S3_PROFILE):
                 s = S3_CLIENT.generate_presigned_url("get_object", Params={"Bucket": S3_BUCKET, "Key": S3_PROFILE},
@@ -92,7 +90,6 @@ def handler(event, context):
             send_message(chat_id, "I know you’d do the same for me.")
 
         elif "destroy" in message.lower():
-            send_message(chat_id, "I'll try my best, but can't promise... Hold on a moment...")
             rc = gh_dispatch("destroy")
             if rc == 204:
                 send_message(chat_id, f"The job is launched.")
