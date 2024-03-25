@@ -6,6 +6,7 @@ This project was created to demonstrate the capabilities of cloud engineering an
 By casually talking with the Telegram chatbot, the user can create his own free (within AWS Free Tier) OpenVPN server with a dedicated public IP address in the selected region. He can also adjust this VPN server without connecting via SSH. When the work is done, the entire infrastructure can be automatically destroyed.
 
 This is just an example of such an implementation that can be (and will be) endlessly improved in many ways.
+
 <a href="url"><img src="images/screenshot.png?raw=true" align="center" height=55% width=55% ></a>
 ## Tech Stack
 
