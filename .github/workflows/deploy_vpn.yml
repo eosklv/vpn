@@ -12,16 +12,9 @@ defaults:
   run:
     working-directory: "terraform"
 jobs:
-  id:
-    name: Workflow ID Provider
-    runs-on: ubuntu-latest
+  deploy:
     steps:
-      - name: ${{github.event.inputs.id}}
-        run: echo run identifier ${{ inputs.id }}
-      - run: sleep 30
-  # deploy:
-  #   if: github.event.inputs.dispatch_id != ""
-  #   steps:
+      - run: sleep 20
   #     - run: echo "💁 The dispatch ID is ${{ github.event.inputs.dispatch_id }}"
   #     runs-on: ubuntu-latest
   #     - name: Check out repository code
