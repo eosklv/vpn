@@ -9,14 +9,13 @@ sys.path.append(os.path.join(here, "./vendored"))
 
 import requests
 
-TELEGRAM_TOKEN = os.environ["TELEGRAM_TOKEN"]
-TELEGRAM_URL = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}"
+TELEGRAM_URL = f"https://api.telegram.org/bot{os.environ['TELEGRAM_TOKEN']}"
 
 GH_AUTH = {"Authorization": f"Bearer {os.environ['GH_TOKEN']}"}
 GH_OWNER = "eosklv"
 GH_REPO = "vpn"
 GH_WORKFLOW = "deploy_vpn.yml"
-GH_URL = f"https://api.github.com/repos/{GH_OWNER}/{GH_REPO}"
+GH_URL = f"https://api.github.com/repos/{GH_OWNER}/{GH_REPO}/actions"
 
 S3_CLIENT = boto3.client("s3")
 S3_BUCKET = "esklv-vpn"
@@ -25,13 +24,13 @@ S3_PROFILE = "profiles/client.ovpn"
 
 def gh_dispatch(action=""):
     payload = json.dumps({"ref": "main", "inputs": {"action": action}})
-    r = requests.post(GH_URL + f"/actions/workflows/{GH_WORKFLOW}/dispatches", headers=GH_AUTH, data=payload)
+    r = requests.post(GH_URL + f"/workflows/{GH_WORKFLOW}/dispatches", headers=GH_AUTH, data=payload)
     return r.status_code
 
 
 def gh_track(chat_id):
     t = (datetime.datetime.utcnow() - datetime.timedelta(minutes=2)).strftime("%Y-%m-%dT%H:%M")
-    r = requests.get(GH_URL + f"/actions/runs?created=%3E{t}", headers=GH_AUTH)
+    r = requests.get(GH_URL + f"/runs?created=%3E{t}", headers=GH_AUTH)
     runs = r.json()["workflow_runs"]
     if len(runs) > 0:
         send_message(chat_id, f"Job status: {runs[0]['status']}")
@@ -75,7 +74,7 @@ def handler(event, context):
                 send_message(chat_id, f"Cannot call GitHub, response code: {rc}. Please check the logs.")
                 raise Exception
 
-        elif "status" in message or "now" in message or "profile" in message or "link" in message:
+        elif "status" in message or "now" in message or "track" in message or "profile" in message or "link" in message:
             gh_track(chat_id)
             if prefix_exists(S3_BUCKET, S3_PROFILE):
                 s = S3_CLIENT.generate_presigned_url("get_object", Params={"Bucket": S3_BUCKET, "Key": S3_PROFILE},
