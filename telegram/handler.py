@@ -98,7 +98,6 @@ def handler(event, context):
             else:
                 send_message(chat_id, f"Cannot call GitHub, response code: {rc}. Please check the logs.")
                 raise Exception
-            # gh_track(chat_id)
             s = S3_CLIENT.delete_object(Bucket=S3_BUCKET, Key=S3_PROFILE)
             send_message(chat_id, "I've done my dirty work.")
 
@@ -107,6 +106,7 @@ def handler(event, context):
 
         else:
             send_message(chat_id, "Thank you... Thank you for being so dumb!")
+    
     except Exception as e:
         print(e)
 
