@@ -2,7 +2,7 @@ name: Deploy application to Lambda and sync files with S3
 on: 
   push:
     paths:
-      - '.github/**'
+      - '.github/workflows/deploy_lambda_and_sync_s3.yml'
       - 'configs/**'
       - 'scripts/**'
       - 'telegram/**'
