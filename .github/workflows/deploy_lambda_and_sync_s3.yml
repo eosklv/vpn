@@ -21,12 +21,12 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::905418258334:role/GithubAccess
-          aws-region: us-east-2
+          role-to-assume: ${{ vars.GH_ROLE }}
+          aws-region: ${{ vars.AWS_REGION }}
       - name: Sync scripts and configs with S3
         run: |
-          aws s3 sync ./scripts s3://esklv-vpn/scripts/
-          aws s3 sync ./configs s3://esklv-vpn/configs/
+          aws s3 sync ./scripts s3://${{ vars.S3_BUCKET }}/scripts/
+          aws s3 sync ./configs s3://${{ vars.S3_BUCKET }}/configs/
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
