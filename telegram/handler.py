@@ -103,7 +103,7 @@ def handler(event, context):
                 raise Exception
             s = S3_CLIENT.delete_object(Bucket=S3_BUCKET, Key=S3_PROFILE)
 
-        elif presented_in(["bye"], splited):
+        elif presented_in(["bye"], message):
             send_message(chat_id, f"Talk to you soon, {first_name}!")
 
         else:
