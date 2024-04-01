@@ -53,20 +53,28 @@ def prefix_exists(bucket, prefix):
     return "Contents" in res
 
 
+def presented_in(patterns, message):
+    for pattern in patterns:
+        if pattern in message:
+            return True
+    return False
+
+
 def handler(event, context):
     try:
         data = json.loads(event["body"])
         message = str(data["message"]["text"]).lower()
+        splited = message.split()
         chat_id = data["message"]["chat"]["id"]
         first_name = data["message"]["chat"]["first_name"]
-
-        if "start" in message or "hi" in message or "hello" in message or "hey" in message:
+                
+        if presented_in(["hi", "hello", "hey"], splited):
             send_message(chat_id, f"Long time no see, {first_name}!")
 
-        elif "how are you" in message:
+        elif presented_in(["how are you", "how is it going"], message):
             send_message(chat_id, "Not that bad! What are we doing today?")
 
-        elif "run" in message:
+        elif presented_in(["run", "deploy", "launch"], splited):
             rc = gh_dispatch("apply")
             if rc == 204:
                 send_message(chat_id, f"The job is launched, please track the status.")
@@ -74,7 +82,7 @@ def handler(event, context):
                 send_message(chat_id, f"Cannot call GitHub, response code: {rc}. Please check the logs.")
                 raise Exception
 
-        elif "status" in message or "now" in message or "track" in message or "profile" in message or "link" in message:
+        elif presented_in(["status", "now", "track", "profile", "link", "config"], splited):
             gh_track(chat_id)
             if prefix_exists(S3_BUCKET, S3_PROFILE):
                 s = S3_CLIENT.generate_presigned_url("get_object", Params={"Bucket": S3_BUCKET, "Key": S3_PROFILE},
@@ -83,10 +91,10 @@ def handler(event, context):
             else:
                 send_message(chat_id, "The profile is removed or not available yet.")
 
-        elif "thank" in message:
+        elif presented_in(["thank"], message):
             send_message(chat_id, "I know you’d do the same for me.")
 
-        elif "destroy" in message:
+        elif presented_in(["destroy"], splited):
             rc = gh_dispatch("destroy")
             if rc == 204:
                 send_message(chat_id, f"The job is launched, please track the status.")
@@ -95,7 +103,7 @@ def handler(event, context):
                 raise Exception
             s = S3_CLIENT.delete_object(Bucket=S3_BUCKET, Key=S3_PROFILE)
 
-        elif "bye" in message:
+        elif presented_in(["bye"], splited):
             send_message(chat_id, f"Talk to you soon, {first_name}!")
 
         else:
