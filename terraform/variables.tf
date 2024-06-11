@@ -20,5 +20,5 @@ variable "default_bucket" {
 
 variable "my_ips" {
   type    = list(string)
-  default = ["45.9.230.8/32"]
+  default = ["67.209.128.2/32"]
 }
