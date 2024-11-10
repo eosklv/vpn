@@ -3,7 +3,6 @@ import os
 import sys
 import boto3
 import datetime
-from botocore.client import Config
 
 here = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.join(here, "./vendored"))
@@ -18,7 +17,7 @@ GH_REPO = "vpn"
 GH_WORKFLOW = "deploy_vpn.yml"
 GH_URL = f"https://api.github.com/repos/{GH_OWNER}/{GH_REPO}/actions"
 
-S3_CLIENT = boto3.client("s3", config=Config(signature_version='s3v4'))
+S3_CLIENT = boto3.client("s3", region_name='eu-north-1')
 S3_BUCKET = "esklv-vpn-eu-north-1"
 S3_PROFILE = "profiles/client.ovpn"
 
