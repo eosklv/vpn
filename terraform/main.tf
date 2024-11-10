@@ -9,14 +9,14 @@ terraform {
   required_version = ">= 1.2.0"
 
   backend "s3" {
-    bucket = "esklv-vpn"
+    bucket = "esklv-vpn-eu-north-1"
     key    = "terraform/terraform.tfstate"
-    region = "us-east-2"
+    region = "eu-north-1"
   }
 }
 
 provider "aws" {
-  region = "us-east-2"
+  region = "eu-north-1"
 }
 
 data "aws_vpc" "default" {
@@ -74,7 +74,7 @@ resource "aws_security_group" "allow_connecting" {
   }
 }
 
-resource "aws_vpc_security_group_ingress_rule" "allow_tcp_on_443_ipv4" {
+resource "aws_vpc_security_group_ingress_rule" "allow_udp_on_443_ipv4" {
   security_group_id = aws_security_group.allow_connecting.id
   cidr_ipv4         = "0.0.0.0/0"
   from_port         = 443

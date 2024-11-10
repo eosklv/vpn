@@ -15,5 +15,5 @@ variable "bucket_access_role_arn" {
 
 variable "default_bucket" {
   description = "S3 bucket"
-  default     = "esklv-vpn"
+  default     = "esklv-vpn-eu-north-1"
 }
