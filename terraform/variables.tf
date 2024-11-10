@@ -5,7 +5,7 @@ variable "ami_id" {
 
 variable "default_vpc_id" {
   description = "Default VPC"
-  default     = "vpc-05ad61cf37d2a7d5f"
+  default     = "vpc-040830449b6066fb3"
 }
 
 variable "bucket_access_role_arn" {
