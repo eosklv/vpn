@@ -17,8 +17,3 @@ variable "default_bucket" {
   description = "S3 bucket"
   default     = "esklv-vpn"
 }
-
-variable "my_ips" {
-  type    = list(string)
-  default = ["5.18.250.247/32"]
-}
