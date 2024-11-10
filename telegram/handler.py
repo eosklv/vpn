@@ -18,7 +18,7 @@ GH_REPO = "vpn"
 GH_WORKFLOW = "deploy_vpn.yml"
 GH_URL = f"https://api.github.com/repos/{GH_OWNER}/{GH_REPO}/actions"
 
-S3_CLIENT = boto3.client("s3", region_name='eu-north-1', config=Config(signature_version='s3v4'))
+S3_CLIENT = boto3.client("s3", region_name='eu-north-1', endpoint_url='https://s3.eu-north-1.amazonaws.com')
 S3_BUCKET = "esklv-vpn-eu-north-1"
 S3_PROFILE = "profiles/client.ovpn"
 
