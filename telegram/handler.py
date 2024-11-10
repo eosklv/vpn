@@ -3,7 +3,6 @@ import os
 import sys
 import boto3
 import datetime
-from botocore.client import Config
 
 here = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.join(here, "./vendored"))
